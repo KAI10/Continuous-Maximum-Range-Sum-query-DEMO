@@ -8,42 +8,69 @@
         width: 100%;
        }
     </style>
+    <script src="../javascripts/get.js" type="text/javascript"></script>
   </head>
   <body>
-    
+
+    <!-->
+    <%= result.solutions[1].startTime %>
+    <%= result.solutions[1].endTime %>
+    -->
+
     <h3>My Google Maps Demo</h3>
     <div id="map"></div>
     <script>
 
     function initMap() {
-        var Center = {lat: <%= result.solutions[0].items[0].latitude %>, lng: <%= result.solutions[0].items[0].longitude %>};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 14,
-          center: Center
-        });
+        
+        var data = <%- JSON.stringify(data) %>;
+        var result = <%- JSON.stringify(result) %>;
+        var time = <%= time %>;
 
-        var minLat = Center.lat, maxLat = Center.lat, minLng = Center.lng, maxLng = Center.lng;
-                
-        <% for(var i=0; i<result.solutions[0].items.length; i++){ %>
-            var lat = <%= result.solutions[0].items[i].latitude %>, 
-                lng = <%= result.solutions[0].items[i].longitude %>,
-                id = <%= result.solutions[0].items[i].id %>; 
-            minLat = Math.min(minLat, lat);
-            maxLat = Math.max(maxLat, lat);
+        var solution = getSolution(result.solutions, time);
+        var locations = {};
 
-            minLng = Math.min(minLng, lng);
-            maxLng = Math.max(maxLng, lng);
+        var minLat = 1000, maxLat = -minLat, minLng = minLat, maxLng = maxLat;
+        var trjIndex = -1;
+        
+        <% for(var i=0; i<data.objects.length; i++){ %>
+            var id = <%= data.objects[i].id %>,
+                loc = getLocation(data.objects[id].locations, time, trjIndex);
+            
+            
+            if(loc.pos != -1){
+                trjIndex = loc.pos;
+                if(solution.includes(id)){
+                  minLat = Math.min(minLat, loc.lat);
+                  maxLat = Math.max(maxLat, loc.lat);
 
-            var marker = new google.maps.Marker({
-              position: {lat: lat, lng: lng},
-              map: map,
-              label: String(id)
-              //icon: image
-              //title: String(id)
-            }); 
+                  minLng = Math.min(minLng, loc.lng);
+                  maxLng = Math.max(maxLng, loc.lng);
+                }
+              
+                locations[id] = {lat: loc.lat, lng: loc.lng};
+            }
+
         <% } %>
 
-        var mbrCenter = {lat: (minLat+maxLat)/2, lng: (minLng+maxLng)/2};
+        var mbrCenter = {lat : (minLat + maxLat)/2, lng : (minLng + maxLng)/2};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 14,
+          center: mbrCenter
+        });
+
+        for(var key in locations){
+            var marker = new google.maps.Marker({
+              position: locations[key],
+              map: map,
+              label: String(key),
+              title: String(key)
+            });
+        }
+        /**/
+        
+        
+        //var mbrCenter = getSolution(locations, result.solutions, time);
         minLat = mbrCenter.lat - <%= parameters.R.d1 %> / 2;
         minLng = mbrCenter.lng - <%= parameters.R.d2 %> / 2;
         
@@ -61,6 +88,7 @@
               west: minLng
             }
         });
+
     }
     </script>
     <script async defer
