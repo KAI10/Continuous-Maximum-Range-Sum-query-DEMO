@@ -25,7 +25,9 @@
         var minLat = Center.lat, maxLat = Center.lat, minLng = Center.lng, maxLng = Center.lng;
                 
         <% for(var i=0; i<result.solutions[0].items.length; i++){ %>
-            var lat = <%= result.solutions[0].items[i].latitude %>, lng = <%= result.solutions[0].items[i].longitude %>; 
+            var lat = <%= result.solutions[0].items[i].latitude %>, 
+                lng = <%= result.solutions[0].items[i].longitude %>,
+                id = <%= result.solutions[0].items[i].id %>; 
             minLat = Math.min(minLat, lat);
             maxLat = Math.max(maxLat, lat);
 
@@ -34,9 +36,16 @@
 
             var marker = new google.maps.Marker({
               position: {lat: lat, lng: lng},
-              map: map
+              map: map,
+              label: String(id)
+              //icon: image
+              //title: String(id)
             }); 
         <% } %>
+
+        var mbrCenter = {lat: (minLat+maxLat)/2, lng: (minLng+maxLng)/2};
+        minLat = mbrCenter.lat - <%= parameters.R.d1 %> / 2;
+        minLng = mbrCenter.lng - <%= parameters.R.d2 %> / 2;
         
         var rectangle = new google.maps.Rectangle({
             strokeColor: '#FF0000',
@@ -47,8 +56,8 @@
             map: map,
             bounds: {
               north: minLat,
-              south: maxLat,
-              east: maxLng,
+              south: minLat + <%= parameters.R.d1 %>,
+              east: minLng + <%= parameters.R.d2 %>,
               west: minLng
             }
         });
