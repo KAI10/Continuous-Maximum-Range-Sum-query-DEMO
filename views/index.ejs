@@ -80,18 +80,8 @@
 
     </script>
     
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6hbSjCuN4EQsh34uhHO1C7gMQNdwBBg4&callback=initMap">
-    </script>
-    
+    <script async defer src= <%= api_url %>></script>
     <input type="range" id="slider" style="width: 500px;" min="0" max="5900" value=0 step="100" onchange="showValue(this.value)" />
-
-    <!--script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6hbSjCuN4EQsh34uhHO1C7gMQNdwBBg4&callback=initMap">
-        function showValue(newValue){
-            document.getElementById("range").innerHTML=newValue;
-        }
-    </script-->
 
     <script type="text/javascript">
         function showValue(newValue){
@@ -101,5 +91,6 @@
         }
     </script>
     <span id="range"> ? </span>
+
   </body>
 </html>
