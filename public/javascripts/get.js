@@ -44,3 +44,38 @@ function getSolution(solutions, time){
 		}
 	}
 }
+
+function getMapProperties(data, result, time){
+
+	var solution = getSolution(result.solutions, time);
+	var locations = {};
+
+	var minLat = 1000, maxLat = -minLat, minLng = minLat, maxLng = maxLat;
+	var trjIndex = -1;
+
+	for(var i=0; i<data.objects.length; i++){
+	    var id = data.objects[i].id,
+	        loc = getLocation(data.objects[id].locations, time, trjIndex);
+	    
+	    
+	    if(loc.pos != -1){
+	        trjIndex = loc.pos;
+	        if(solution.includes(id)){
+	          minLat = Math.min(minLat, loc.lat);
+	          maxLat = Math.max(maxLat, loc.lat);
+
+	          minLng = Math.min(minLng, loc.lng);
+	          maxLng = Math.max(maxLng, loc.lng);
+	        }
+	      
+	        locations[id] = {lat: loc.lat, lng: loc.lng};
+	    }
+	    else{
+	    	locations[id] = "NULL";
+	    }
+
+	}
+
+	var mbrCenter = {lat : (minLat + maxLat)/2, lng : (minLng + maxLng)/2};
+	return {center: mbrCenter, locations: locations};
+}

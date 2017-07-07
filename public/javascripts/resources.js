@@ -3,4 +3,6 @@ var F = {};
 var T = {start: 0, end: 5900};
 
 var time = T.start;
-var map;
+var markers = {};
+var rectangle = null;
+var map = "NULL";

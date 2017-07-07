@@ -23,55 +23,46 @@
         var data = <%- JSON.stringify(data) %>;
         var result = <%- JSON.stringify(result) %>;
 
-        var solution = getSolution(result.solutions, time);
-        var locations = {};
-
-        var minLat = 1000, maxLat = -minLat, minLng = minLat, maxLng = maxLat;
-        var trjIndex = -1;
+        var mapProperties = getMapProperties(data, result, time);
+        mbrCenter = mapProperties.center;
+        locations = mapProperties.locations;
         
-        <% for(var i=0; i<data.objects.length; i++){ %>
-            var id = <%= data.objects[i].id %>,
-                loc = getLocation(data.objects[id].locations, time, trjIndex);
-            
-            
-            if(loc.pos != -1){
-                trjIndex = loc.pos;
-                if(solution.includes(id)){
-                  minLat = Math.min(minLat, loc.lat);
-                  maxLat = Math.max(maxLat, loc.lat);
-
-                  minLng = Math.min(minLng, loc.lng);
-                  maxLng = Math.max(maxLng, loc.lng);
-                }
-              
-                locations[id] = {lat: loc.lat, lng: loc.lng};
-            }
-
-        <% } %>
-
-        var mbrCenter = {lat : (minLat + maxLat)/2, lng : (minLng + maxLng)/2};
-        
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 14,
-          center: mbrCenter
-        });
-
-        for(var key in locations){
-            var marker = new google.maps.Marker({
-              position: locations[key],
-              map: map,
-              label: String(key),
-              title: String(key)
+        if(map == "NULL"){
+            map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 14,
+              center: mbrCenter
             });
         }
-        /**/
+        else{
+          map.setCenter(mbrCenter);
+        }
+
         
-        
-        //var mbrCenter = getSolution(locations, result.solutions, time);
+        for(var key in markers){
+            markers[key].setMap(null);
+        }
+      
+        for(var key in locations){
+            if(locations[key] != "NULL"){
+                markers[key] = new google.maps.Marker({
+                    position: locations[key],
+                    label: String(key),
+                    title: String(key)
+                });
+
+                markers[key].setMap(map);
+            } 
+            else{
+                markers[key].setMap(null);
+            }           
+        }
+
         minLat = mbrCenter.lat - R.d1 / 2;
         minLng = mbrCenter.lng - R.d2 / 2;
         
-        var rectangle = new google.maps.Rectangle({
+        if(rectangle != null) rectangle.setMap(null);
+        
+        rectangle = new google.maps.Rectangle({
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -85,8 +76,8 @@
               west: minLng
             }
         });
-
     }
+
     </script>
     
     <script async defer
