@@ -4,28 +4,24 @@
     <title><%= title %></title>
     <style>
        #map {
-        height: 600px;
+        height: 550px;
         width: 100%;
        }
     </style>
     <script src="../javascripts/get.js" type="text/javascript"></script>
+    <script src="../javascripts/resources.js" type="text/javascript"></script>
   </head>
   <body>
 
-    <!-->
-    <%= result.solutions[1].startTime %>
-    <%= result.solutions[1].endTime %>
-    -->
-
     <h3>My Google Maps Demo</h3>
     <div id="map"></div>
+
     <script>
 
     function initMap() {
         
         var data = <%- JSON.stringify(data) %>;
         var result = <%- JSON.stringify(result) %>;
-        var time = <%= time %>;
 
         var solution = getSolution(result.solutions, time);
         var locations = {};
@@ -54,7 +50,8 @@
         <% } %>
 
         var mbrCenter = {lat : (minLat + maxLat)/2, lng : (minLng + maxLng)/2};
-        var map = new google.maps.Map(document.getElementById('map'), {
+        
+        map = new google.maps.Map(document.getElementById('map'), {
           zoom: 14,
           center: mbrCenter
         });
@@ -71,8 +68,8 @@
         
         
         //var mbrCenter = getSolution(locations, result.solutions, time);
-        minLat = mbrCenter.lat - <%= parameters.R.d1 %> / 2;
-        minLng = mbrCenter.lng - <%= parameters.R.d2 %> / 2;
+        minLat = mbrCenter.lat - R.d1 / 2;
+        minLng = mbrCenter.lng - R.d2 / 2;
         
         var rectangle = new google.maps.Rectangle({
             strokeColor: '#FF0000',
@@ -83,17 +80,35 @@
             map: map,
             bounds: {
               north: minLat,
-              south: minLat + <%= parameters.R.d1 %>,
-              east: minLng + <%= parameters.R.d2 %>,
+              south: minLat + R.d1,
+              east: minLng + R.d2,
               west: minLng
             }
         });
 
     }
     </script>
+    
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6hbSjCuN4EQsh34uhHO1C7gMQNdwBBg4&callback=initMap">
     </script>
-    <!---->
+    
+    <input type="range" id="slider" style="width: 500px;" min="0" max="5900" value=0 step="100" onchange="showValue(this.value)" />
+
+    <!--script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6hbSjCuN4EQsh34uhHO1C7gMQNdwBBg4&callback=initMap">
+        function showValue(newValue){
+            document.getElementById("range").innerHTML=newValue;
+        }
+    </script-->
+
+    <script type="text/javascript">
+        function showValue(newValue){
+            time = newValue;
+            document.getElementById("range").innerHTML = time;
+            initMap();
+        }
+    </script>
+    <span id="range"> ? </span>
   </body>
 </html>
