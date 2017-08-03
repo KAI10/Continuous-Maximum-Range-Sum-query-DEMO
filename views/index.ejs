@@ -1,96 +1,85 @@
 <!DOCTYPE html>
 <html>
   <head>
+
     <title><%= title %></title>
-    <style>
-       #map {
-        height: 550px;
-        width: 100%;
-       }
-    </style>
     <script src="../javascripts/get.js" type="text/javascript"></script>
     <script src="../javascripts/resources.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheets/dropdown.css" /></script>
+  
   </head>
   <body>
-
+    
     <h3>COMAXRS Demo</h3>
-    <div id="map"></div>
+
+    <br><br> Select Dataset      
+    <select id="datasetSelect" onchange="setDataset()">
+        <option value="Dummy">Dataset
+        <option value="SF">San Francisco Bay
+        <option value="rome">Rome
+        <option value="3984">Human Mobility
+        <option value="zebra">Zebra
+    </select>
 
     <script>
-
-    function initMap() {
+    function setDataset() {
+        dataset = document.getElementById("datasetSelect").value;
+        //console.log(dataset);
+        //console.log(T.start);
         
-        var data = <%- JSON.stringify(data) %>;
-        var result = <%- JSON.stringify(result) %>;
-
-        var mapProperties = getMapProperties(data, result, time);
-        mbrCenter = mapProperties.center;
-        locations = mapProperties.locations;
-        
-        if(map == "NULL"){
-            map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 14,
-              center: mbrCenter
-            });
+        if(dataset == "SF"){
+            document.getElementById("startTime").min = 1211018404;
+            document.getElementById("startTime").max = 1213089934;
+            document.getElementById("start").innerHTML = 0;
         }
-        else{
-          map.setCenter(mbrCenter);
+        else if(dataset == "3984"){
+            document.getElementById("startTime").min = 0;
+            document.getElementById("startTime").max = 59;
+            document.getElementById("start").innerHTML = 0;
         }
 
-        
-        for(var key in markers){
-            markers[key].setMap(null);
-        }
-      
-        for(var key in locations){
-            if(locations[key] != "NULL"){
-                markers[key] = new google.maps.Marker({
-                    position: locations[key],
-                    label: String(key),
-                    title: String(key)
-                });
-
-                markers[key].setMap(map);
-            } 
-            else{
-                markers[key].setMap(null);
-            }           
-        }
-
-        minLat = mbrCenter.lat - R.d1 / 2;
-        minLng = mbrCenter.lng - R.d2 / 2;
-        
-        if(rectangle != null) rectangle.setMap(null);
-        
-        rectangle = new google.maps.Rectangle({
-            strokeColor: '#FF0000',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#FF0000',
-            fillOpacity: 0.35,
-            map: map,
-            bounds: {
-              north: minLat,
-              south: minLat + R.d1,
-              east: minLng + R.d2,
-              west: minLng
-            }
-        });
+        setShowParameters(dataset, T.start, T.end);
     }
-
     </script>
-    
-    <script async defer src= <%= api_url %>></script>
-    <input type="range" id="slider" style="width: 500px;" min="0" max="5900" value=0 step="100" onchange="showValue(this.value)" />
+
+    <br><br> Start Time <br>
+    <input type="range" id="startTime" style="width: 500px;" min="" max="" value=0 step="1" onchange="setStartTime(this.value)" />
 
     <script type="text/javascript">
-        function showValue(newValue){
-            time = newValue;
-            document.getElementById("range").innerHTML = time;
-            initMap();
+        function setStartTime(newValue){
+            T.start = parseInt(newValue);
+            T.end = T.start + duration * 60;
+            document.getElementById("start").innerHTML = newValue;
+            setShowParameters(dataset, T.start, T.end);
         }
     </script>
-    <span id="range"> ? </span>
+    <span id="start"> ? </span>
+
+    <br><br> Time Range <br>
+    <input type="range" id="duration" style="width: 500px;" min="0" max="90" value=0 step="1" onchange="setEndTime(this.value)" />
+
+    <script type="text/javascript">
+        function setEndTime(newValue){
+            duration = parseInt(newValue);
+            T.end = T.start + duration * 60;
+            document.getElementById("end").innerHTML = newValue+ ' minute(s)';
+            setShowParameters(dataset, T.start, T.end);
+        }
+    </script>
+    <span id="end"> 0 minute(s) </span>
+
+    <br><br><a href="" class="button" id="redirect">Show in Map</a>
+    <script type="text/javascript">
+        function setShowParameters(data, start, end){
+            if(dataset == '3984') end = Math.min(end, 59);
+            else if(dataset == 'SF') end = Math.min(end, 1213089934);
+ 
+            var addr = "/show/"+data+"/"+start.toString()+"/"+end.toString();
+            console.log(addr);
+            document.getElementById("redirect").href = addr;
+        }
+    </script>
 
   </body>
+
 </html>

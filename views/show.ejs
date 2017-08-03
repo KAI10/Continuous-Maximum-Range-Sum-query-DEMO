@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <style>
+       #map {
+        height: 550px;
+        width: 100%;
+       }
+    </style>
+    <script src="/javascripts/get.js" type="text/javascript"></script>
+    <script src="/javascripts/resources.js" type="text/javascript"></script>
+  </head>
+  <body>
+
+    <h3>COMAXRS Demo</h3>
+    <div id="map"></div>
+       
+    <script>
+
+    function initMap() {
+
+        console.log('inside initMap');
+        
+        var result = <%- JSON.stringify(result) %>;
+        var data = <%- JSON.stringify(data) %>;
+        //console.log(data);
+
+        console.log('converting complete.');
+
+
+        if(map == "NULL") time = <%= startTime %>;
+        console.log('time: ', time);
+        //console.log(data[0].objects);
+
+
+        var mapProperties = getMapProperties(data, result, time);
+        mbrCenter = mapProperties.center;
+        locations = mapProperties.locations;
+
+        console.log(locations); 
+        
+        if(map == "NULL"){
+            map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 14,
+              center: mbrCenter
+            });
+        }
+        else{
+          map.setCenter(mbrCenter);
+        }
+
+        //console.log(markers);
+        
+        if(map != "NULL"){
+            for(var key in markers){
+                markers[key].setMap(null);
+            }
+        }
+      
+        for(var key in locations){
+            if(locations[key] != "NULL"){
+                markers[key] = new google.maps.Marker({
+                    position: locations[key],
+                    label: String(key),
+                    title: String(key)
+                });
+
+                markers[key].setMap(map);
+            } 
+            else{
+                if(markers[key]) markers[key].setMap(null);
+            }           
+        }
+
+        minLat = mbrCenter.lat - R.d1 / 2;
+        minLng = mbrCenter.lng - R.d2 / 2;
+        
+        if(rectangle != null) rectangle.setMap(null);
+        
+        rectangle = new google.maps.Rectangle({
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35,
+            map: map,
+            bounds: {
+              north: minLat,
+              south: minLat + R.d1,
+              east: minLng + R.d2,
+              west: minLng
+            }
+        });
+    }
+
+    </script>
+    
+    <script async defer src= <%= api_url %>></script>
+    <input type="range" id="slider" style="width: 500px;" min=<%= startTime %> max=<%= endTime %> value=<%= startTime %> step="1" onchange="showValue(this.value)" />
+
+    <span id="currentTime"> <%= startTime %> </span>
+
+    <script type="text/javascript">
+        function showValue(newValue){
+            time = newValue;
+            document.getElementById("currentTime").innerHTML = time;
+            initMap();
+        }
+    </script>
+
+  </body>
+</html>
