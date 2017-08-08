@@ -64,14 +64,16 @@ function getMapProperties(data, result, time){
 			        minLng = Math.min(minLng, loc.lng);
 			        maxLng = Math.max(maxLng, loc.lng);
 
+			        /*
 			        count++;
 		        	locations[id] = {lat: loc.lat, lng: loc.lng};
+		        	*/
 		        }
 		      
-		      	/*
+		      	
 		      	count++;
 		        locations[id] = {lat: loc.lat, lng: loc.lng};
-		        */
+		        
 		    }
 		    else{
 		    	locations[id] = "NULL";

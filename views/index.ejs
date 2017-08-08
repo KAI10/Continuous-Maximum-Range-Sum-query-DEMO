@@ -14,11 +14,8 @@
 
     <br><br> Select Dataset      
     <select id="datasetSelect" onchange="setDataset()">
-        <option value="Dummy">Dataset
-        <option value="SF">San Francisco Bay
-        <option value="rome">Rome
-        <option value="3984">Human Mobility
-        <option value="zebra">Zebra
+        <option value="3984">MNTG 1
+        <option value="4251">MNTG 2
     </select>
 
     <script>
@@ -35,6 +32,11 @@
         else if(dataset == "3984"){
             document.getElementById("startTime").min = 0;
             document.getElementById("startTime").max = 59;
+            document.getElementById("start").innerHTML = 0;
+        }
+        else if(dataset == "4251"){
+            document.getElementById("startTime").min = 0;
+            document.getElementById("startTime").max = 299;
             document.getElementById("start").innerHTML = 0;
         }
 
@@ -73,6 +75,7 @@
         function setShowParameters(data, start, end){
             if(dataset == '3984') end = Math.min(end, 59);
             else if(dataset == 'SF') end = Math.min(end, 1213089934);
+            else if(dataset == '4251') end = Math.min(end, 299);
  
             var addr = "/show/"+data+"/"+start.toString()+"/"+end.toString();
             console.log(addr);

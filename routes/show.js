@@ -74,9 +74,11 @@ router.get('/:name/:startTime/:endTime', function(req, res, next) {
 		var address = '../public/data/'+req.params.name+'_locations_'+part.toString()+'.json';
 		var timeFiltered = filter(address, parseInt(startTime), parseInt(endTime));
 
+		/*
 		var localPath = './public/log'+part.toString()+'.json';
 		var body = JSON.stringify(timeFiltered);
 		fs.writeFile(localPath,body,function(err){});
+		*/
 
 		data.push(timeFiltered);
 		console.log(part.toString()+' complete.');
