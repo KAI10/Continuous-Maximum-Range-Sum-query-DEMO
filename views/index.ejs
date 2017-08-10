@@ -12,11 +12,34 @@
     
     <h3>COMAXRS Demo</h3>
 
-    <br><br> Select Dataset      
+    <br><br> Select Dataset  
     <select id="datasetSelect" onchange="setDataset()">
         <option value="3984">MNTG 1
         <option value="4251">MNTG 2
     </select>
+
+    <script>
+        var dataset = <%- JSON.stringify(dataset) %>;
+        console.log(dataset);
+
+        if(dataset != ""){
+            var x = document.getElementById("datasetSelect");
+            var option = document.createElement("option");
+            option.text = "newDataset";
+            x.add(option, x[0]);
+            x.selectedIndex = 0;
+        }
+    </script>
+
+    <br><br> Upload New Dataset <br><br>
+    <form ref='uploadForm' 
+      id='uploadForm' 
+      action='/upload' 
+      method='post' 
+      encType="multipart/form-data">
+        <input type="file" name="sampleFile" />
+        <input type='submit' value='Upload!' />
+    </form>
 
     <script>
     function setDataset() {

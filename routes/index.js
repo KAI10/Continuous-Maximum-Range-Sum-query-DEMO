@@ -5,7 +5,15 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', {
-  	title: 'COMAXRS-DEMO'
+  	title: 'COMAXRS-DEMO',
+  	dataset: ''
+  });
+});
+
+router.get('/:dataset', function(req, res, next) {
+  res.render('index', {
+  	title: 'COMAXRS-DEMO',
+  	dataset: req.params.dataset
   });
 });
 

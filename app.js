@@ -8,6 +8,9 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var show  = require('./routes/show');
+var fileUpload = require('express-fileupload');
+//var exec = require('child_process').exec;
+const execSync = require('child_process').execSync;
 
 var app = express();
 
@@ -26,6 +29,38 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/show', show);
+app.use(fileUpload());
+
+function puts(error, stdout, stderr){
+	console.log(error); 
+	console.log(stdout);
+}
+
+app.post('/upload', function(req, res) {
+
+	console.log('uploading...');
+	if (!req.files) return res.status(400).send('No files were uploaded.');
+
+	// The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file 
+	var sampleFile = req.files.sampleFile;
+
+	// Use the mv() method to place the file somewhere on your server 
+	sampleFile.mv('./public/data/newData_0', function(err){
+		if(err){
+			return res.status(500).send(err);
+			res.redirect('/');
+		}
+
+		//run co_maxrs on new dataset
+		console.log('running program...');
+		//exec("cd ./public/data && ./co_maxrs.out", puts);
+		var code = code = execSync('cd ./public/data && ./co_maxrs.out');
+		//exec("pwd", puts);
+
+		res.redirect('/newData');
+		//res.send('File uploaded!');
+	});
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
