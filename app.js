@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var show  = require('./routes/show');
+var show = require('./routes/show');
 var fileUpload = require('express-fileupload');
 //var exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
@@ -22,7 +22,9 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+	extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -31,8 +33,8 @@ app.use('/users', users);
 app.use('/show', show);
 app.use(fileUpload());
 
-function puts(error, stdout, stderr){
-	console.log(error); 
+function puts(error, stdout, stderr) {
+	console.log(error);
 	console.log(stdout);
 }
 
@@ -45,8 +47,8 @@ app.post('/upload', function(req, res) {
 	var sampleFile = req.files.sampleFile;
 
 	// Use the mv() method to place the file somewhere on your server 
-	sampleFile.mv('./public/data/newData_0', function(err){
-		if(err){
+	sampleFile.mv('./public/data/newData_0', function(err) {
+		if (err) {
 			return res.status(500).send(err);
 			res.redirect('/');
 		}
@@ -54,7 +56,7 @@ app.post('/upload', function(req, res) {
 		//run co_maxrs on new dataset
 		console.log('running program...');
 		//exec("cd ./public/data && ./co_maxrs.out", puts);
-		var code = code = execSync('cd ./public/data && ./co_maxrs.out');
+		var code = execSync('cd ./public/data && ./co_maxrs.out');
 		//exec("pwd", puts);
 
 		res.redirect('/newData');
@@ -64,20 +66,20 @@ app.post('/upload', function(req, res) {
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+	// render the error page
+	res.status(err.status || 500);
+	res.render('error');
 });
 
 module.exports = app;
