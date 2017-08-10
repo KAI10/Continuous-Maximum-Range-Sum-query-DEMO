@@ -2,3 +2,4 @@
 API-KEY
 config.js
 *.bak
+./public/data/program/
