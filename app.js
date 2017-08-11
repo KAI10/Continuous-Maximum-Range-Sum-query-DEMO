@@ -22,9 +22,7 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-	extended: false
-}));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -32,11 +30,6 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/show', show);
 app.use(fileUpload());
-
-function puts(error, stdout, stderr) {
-	console.log(error);
-	console.log(stdout);
-}
 
 app.post('/upload', function(req, res) {
 
@@ -57,8 +50,6 @@ app.post('/upload', function(req, res) {
 		console.log('running program...');
 		//exec("cd ./public/data && ./co_maxrs.out", puts);
 		var code = execSync('cd ./public/data && ./co_maxrs.out');
-		//exec("pwd", puts);
-
 		res.redirect('/newData');
 		//res.send('File uploaded!');
 	});

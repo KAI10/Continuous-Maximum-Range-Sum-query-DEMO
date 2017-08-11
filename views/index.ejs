@@ -1,44 +1,49 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!--link href="../css/bootstrap.min.css" rel="stylesheet"-->
+    <link href="../css/form.css" rel="stylesheet">
 
     <title><%= title %></title>
     <script src="../javascripts/get.js" type="text/javascript"></script>
     <script src="../javascripts/resources.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="stylesheets/dropdown.css" /></script>
   
   </head>
   <body>
-    
-    <h3>COMAXRS Demo</h3>
 
-    <br><br> Select Dataset  
+    <div align="center">
+    
+    <!--h3>COMAXRS Demo</h3-->
+
+    <h4>Select Dataset</h4> 
     <select id="datasetSelect" onchange="setDataset()">
         <option value="3984">MNTG 1
         <option value="4251">MNTG 2
     </select>
 
     <script>
-        var dataset = <%- JSON.stringify(dataset) %>;
-        console.log(dataset);
+        var datasetName = <%- JSON.stringify(dataset) %>;
+        console.log(datasetName);
 
-        if(dataset != ""){
+        if(datasetName != ""){
             var x = document.getElementById("datasetSelect");
             var option = document.createElement("option");
-            option.text = "newDataset";
+            option.text = "newData";
             x.add(option, x[0]);
             x.selectedIndex = 0;
+
+            dataset = datasetName;
         }
     </script>
 
-    <br><br> Upload New Dataset <br><br>
+    <br><br> <h4>Upload New Dataset</h4>
     <form ref='uploadForm' 
       id='uploadForm' 
       action='/upload' 
       method='post' 
       encType="multipart/form-data">
-        <input type="file" name="sampleFile" />
-        <input type='submit' value='Upload!' />
+        <input type="file" name="sampleFile" /><br>
+        <input type='submit' value='Upload' />
     </form>
 
     <script>
@@ -46,28 +51,26 @@
         dataset = document.getElementById("datasetSelect").value;
         //console.log(dataset);
         //console.log(T.start);
-        
+        document.getElementById("startTime").min = 0;
+        document.getElementById("start").innerHTML = 0;
+
         if(dataset == "SF"){
             document.getElementById("startTime").min = 1211018404;
             document.getElementById("startTime").max = 1213089934;
-            document.getElementById("start").innerHTML = 0;
+            
         }
         else if(dataset == "3984"){
-            document.getElementById("startTime").min = 0;
             document.getElementById("startTime").max = 59;
-            document.getElementById("start").innerHTML = 0;
         }
         else if(dataset == "4251"){
-            document.getElementById("startTime").min = 0;
             document.getElementById("startTime").max = 299;
-            document.getElementById("start").innerHTML = 0;
         }
 
         setShowParameters(dataset, T.start, T.end);
     }
     </script>
 
-    <br><br> Start Time <br>
+    <h4>Start Time</h4>
     <input type="range" id="startTime" style="width: 500px;" min="" max="" value=0 step="1" onchange="setStartTime(this.value)" />
 
     <script type="text/javascript">
@@ -78,9 +81,9 @@
             setShowParameters(dataset, T.start, T.end);
         }
     </script>
-    <span id="start"> ? </span>
+    <br><span id="start"> ? </span><br>
 
-    <br><br> Time Range <br>
+    <h4>Time Range</h4>
     <input type="range" id="duration" style="width: 500px;" min="0" max="90" value=0 step="1" onchange="setEndTime(this.value)" />
 
     <script type="text/javascript">
@@ -91,9 +94,9 @@
             setShowParameters(dataset, T.start, T.end);
         }
     </script>
-    <span id="end"> 0 minute(s) </span>
+    <br><span id="end"> 0 minute(s) </span>
 
-    <br><br><a href="" class="button" id="redirect">Show in Map</a>
+    <br><br><br><a href="" class="button" id="redirect">Show in Map</a>
     <script type="text/javascript">
         function setShowParameters(data, start, end){
             if(dataset == '3984') end = Math.min(end, 59);
@@ -105,6 +108,8 @@
             document.getElementById("redirect").href = addr;
         }
     </script>
+
+    </div>
 
   </body>
 
