@@ -3,7 +3,6 @@ function getLocation(locations, time){
 		//console.log('invalid');
 		return {lat: 1000, lng: 1000, pos: -1};
 	}
-
 	var lat, lng, Dt, dt, plat, plng, nlat, nlng;
 	var left = 0, right = locations.length - 1, mid;
 	while(left <= right){
@@ -49,6 +48,7 @@ function getMapProperties(data, result, time){
 
 	var count = 0;
 	for(var part=0; part<10; part++){
+		if(data[part].objects == null) continue;
 
 		for(var i=0; i<data[part].objects.length; i++){
 		    var id = data[part].objects[i].id,

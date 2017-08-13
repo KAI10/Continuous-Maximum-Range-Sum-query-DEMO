@@ -22,35 +22,30 @@ function getIndex(locations, time){
 
 function filter(address, startTime, endTime){
 	
-	startTime = startTime - 300, endTime = endTime + 300;
+	startTime = startTime - 600, endTime = endTime + 600;
 
 	var data = require(address);
 	console.log('before: ', sizeof(data));
 
 	//var count = 0;
-	for(var i=0; i<data.objects.length;){
-		/*
-		for(var l=0; l<data.objects[i].locations.length;){
-			//console.log(data.objects[i].locations[l].time);
-			if(data.objects[i].locations[l].time < startTime || data.objects[i].locations[l].time > endTime){
-				//count++;
-				data.objects[i].locations.splice(l, 1);
-			}
-			else l++;
-		}
-		*/
-		var len = data.objects[i].locations.length;
-		var startIndex = getIndex(data.objects[i].locations, startTime);
-		var endIndex = getIndex(data.objects[i].locations, endTime);
+	if(data.objects != null){
+		for(var i=0; i<data.objects.length;){
+			var len = data.objects[i].locations.length;
+			var startIndex = getIndex(data.objects[i].locations, startTime);
+			var endIndex = getIndex(data.objects[i].locations, endTime);
 
-		data.objects[i].locations.splice(endIndex+1, len - endIndex - 1);
-		data.objects[i].locations.splice(0, startIndex);
-		
-		if(data.objects[i].locations.length == 0) data.objects.splice(i, 1);
-		else i++;
-	} 
+			data.objects[i].locations.splice(endIndex+1, len - endIndex - 1);
+			data.objects[i].locations.splice(0, startIndex);
+			
+			if(data.objects[i].locations.length == 0) data.objects.splice(i, 1);
+			else i++;
+		}
+	}
 
 	console.log('after: ', sizeof(data));
+
+	//delete require reference to stop require from caching
+	delete require.cache[require.resolve(address)];
 	return data;
 }
 
@@ -73,12 +68,6 @@ router.get('/:name/:startTime/:endTime', function(req, res, next) {
 	for(var part = 0; part < 10; part++){
 		var address = '../public/data/'+req.params.name+'_locations_'+part.toString()+'.json';
 		var timeFiltered = filter(address, parseInt(startTime), parseInt(endTime));
-
-		/*
-		var localPath = './public/log'+part.toString()+'.json';
-		var body = JSON.stringify(timeFiltered);
-		fs.writeFile(localPath,body,function(err){});
-		*/
 
 		data.push(timeFiltered);
 		console.log(part.toString()+' complete.');

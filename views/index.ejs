@@ -19,6 +19,7 @@
     <select id="datasetSelect" onchange="setDataset()">
         <option value="3984">MNTG 1
         <option value="4251">MNTG 2
+        <option value="ZR"> Zebra Net
     </select>
 
     <script>
@@ -53,17 +54,30 @@
         //console.log(T.start);
         document.getElementById("startTime").min = 0;
         document.getElementById("start").innerHTML = 0;
+        T.start = 0;
+        T.end = T.start;
 
         if(dataset == "SF"){
             document.getElementById("startTime").min = 1211018404;
+            document.getElementById("start").innerHTML = 1211018404;
+            T.start = 1211018404;
+            T.end = T.start;
+
             document.getElementById("startTime").max = 1213089934;
-            
         }
         else if(dataset == "3984"){
             document.getElementById("startTime").max = 59;
         }
         else if(dataset == "4251"){
             document.getElementById("startTime").max = 299;
+        }
+        else if(dataset == "ZR"){
+            document.getElementById("startTime").min = 1119606000;
+            document.getElementById("start").innerHTML = 1119606000;
+            T.start = 1119606000;
+            T.end = T.start;
+
+            document.getElementById("startTime").max = 1120797840; 
         }
 
         setShowParameters(dataset, T.start, T.end);
@@ -102,6 +116,7 @@
             if(dataset == '3984') end = Math.min(end, 59);
             else if(dataset == 'SF') end = Math.min(end, 1213089934);
             else if(dataset == '4251') end = Math.min(end, 299);
+            else if(dataset == 'ZR') end = Math.min(end, 1120797840);
  
             var addr = "/show/"+data+"/"+start.toString()+"/"+end.toString();
             console.log(addr);
