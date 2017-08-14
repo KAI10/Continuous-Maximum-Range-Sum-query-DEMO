@@ -53,13 +53,13 @@
         //console.log(dataset);
         //console.log(T.start);
         document.getElementById("startTime").min = 0;
-        document.getElementById("start").innerHTML = 0;
+        document.getElementById("start").innerHTML = timeConverter(0);
         T.start = 0;
         T.end = T.start;
 
         if(dataset == "SF"){
             document.getElementById("startTime").min = 1211018404;
-            document.getElementById("start").innerHTML = 1211018404;
+            document.getElementById("start").innerHTML = timeConverter(121101840);
             T.start = 1211018404;
             T.end = T.start;
 
@@ -73,7 +73,7 @@
         }
         else if(dataset == "ZR"){
             document.getElementById("startTime").min = 1119606000;
-            document.getElementById("start").innerHTML = 1119606000;
+            document.getElementById("start").innerHTML = timeConverter(1119606000);
             T.start = 1119606000;
             T.end = T.start;
 
@@ -91,7 +91,7 @@
         function setStartTime(newValue){
             T.start = parseInt(newValue);
             T.end = T.start + duration * 60;
-            document.getElementById("start").innerHTML = newValue;
+            document.getElementById("start").innerHTML = timeConverter(newValue);
             setShowParameters(dataset, T.start, T.end);
         }
     </script>

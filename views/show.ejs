@@ -13,7 +13,8 @@
   </head>
   <body>
 
-    <h3>COMAXRS Demo</h3>
+    <% include templates/header.ejs %>
+    <!--h3>COMAXRS Demo</h3-->
     <div id="map"></div>
        
     <script>
@@ -101,9 +102,10 @@
     <span id="currentTime"> <%= startTime %> </span>
 
     <script type="text/javascript">
+        document.getElementById("currentTime").innerHTML = timeConverter(<%= startTime %>);
         function showValue(newValue){
             time = newValue;
-            document.getElementById("currentTime").innerHTML = time;
+            document.getElementById("currentTime").innerHTML = timeConverter(time);
             initMap();
         }
     </script>
