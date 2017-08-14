@@ -21,6 +21,7 @@
 
     function initMap() {
 
+        //console.log(window.location.href);
         console.log('inside initMap');
         
         var result = <%- JSON.stringify(result) %>;
@@ -72,6 +73,12 @@
                 if(markers[key]) markers[key].setMap(null);
             }           
         }
+
+        R.d1 = <%= qSize %>;
+        R.d2 = R.d1;
+
+        console.log("R.d1: ", R.d1);
+        console.log("R.d2: ", R.d2);
 
         minLat = mbrCenter.lat - R.d1 / 2;
         minLng = mbrCenter.lng - R.d2 / 2;

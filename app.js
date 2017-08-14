@@ -49,7 +49,7 @@ app.post('/upload', function(req, res) {
 		//run co_maxrs on new dataset
 		console.log('running program...');
 		//exec("cd ./public/data && ./co_maxrs.out", puts);
-		var code = execSync('cd ./public/data && ./co_maxrs.out');
+		var code = execSync('cd ./public/data && ./co_maxrs.out newData');
 		res.redirect('/newData');
 		//res.send('File uploaded!');
 	});

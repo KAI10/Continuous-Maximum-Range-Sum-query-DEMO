@@ -50,18 +50,23 @@ function filter(address, startTime, endTime){
 }
 
 /* GET Map page. */
-router.get('/:name/:startTime/:endTime', function(req, res, next) {
+router.get('/:name/:startTime/:endTime/:qSize', function(req, res, next) {
 
 	console.log('dataset: ', req.params.name);
 	console.log('start: ', req.params.startTime);
 	console.log('end: ', req.params.endTime);
+	console.log('qSize: ', req.params.qSize);
 
 	// ***** filter data with startTime and endtime ******
 
 	var startTime = req.params.startTime;
 	var endTime = req.params.endTime;
+	var qSize = req.params.qSize;
 
-	var result = require('../public/data/'+req.params.name+'.json');
+	var address = null;
+	if(req.params.name == 'newData') address = '../public/data/'+req.params.name+'.json';
+	else address = '../public/data/'+req.params.name+ '_' + qSize +'.json'
+	var result = require(address);
 	
 	//read data from multiple jsons
 	var data = [];
@@ -81,6 +86,7 @@ router.get('/:name/:startTime/:endTime', function(req, res, next) {
 		data: data,
 		startTime: startTime,
 		endTime: endTime,
+		qSize: qSize,
 		api_url: config.api_url
 	});
 });

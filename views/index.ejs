@@ -22,21 +22,6 @@
         <option value="ZR"> Zebra Net
     </select>
 
-    <script>
-        var datasetName = <%- JSON.stringify(dataset) %>;
-        console.log(datasetName);
-
-        if(datasetName != ""){
-            var x = document.getElementById("datasetSelect");
-            var option = document.createElement("option");
-            option.text = "newData";
-            x.add(option, x[0]);
-            x.selectedIndex = 0;
-
-            dataset = datasetName;
-        }
-    </script>
-
     <br><br> <h4>Upload New Dataset</h4>
     <form ref='uploadForm' 
       id='uploadForm' 
@@ -80,8 +65,42 @@
             document.getElementById("startTime").max = 1120797840; 
         }
 
-        setShowParameters(dataset, T.start, T.end);
+        setShowParameters(dataset, T.start, T.end, R.d1);
     }
+    </script>
+
+    <h4>Set Query Rectangle Size</h4>
+    <select id="queryRectangleSize" onchange="setQueryRectangleSize()">
+        <option value="0.01"> 0.01 x 0.01
+        <option value="0.025"> 0.025 x 0.025
+        <option value="0.05"> 0.05 x 0.05
+    </select>
+    
+    <script>
+        var datasetName = <%- JSON.stringify(dataset) %>;
+        console.log(datasetName);
+
+        if(datasetName != ""){
+        	document.getElementById("queryRectangleSize").disabled = true;
+            var x = document.getElementById("datasetSelect");
+            var option = document.createElement("option");
+            option.text = "newData";
+            x.add(option, x[0]);
+            x.selectedIndex = 0;
+
+            dataset = datasetName;
+        }
+    </script>
+
+    <script>
+        function setQueryRectangleSize(){
+            R.d1 = document.getElementById("queryRectangleSize").value;
+            R.d1 = parseFloat(R.d1);
+            R.d2 = R.d1;
+
+            console.log(R.d1);
+            setShowParameters(dataset, T.start, T.end, R.d1);
+        }
     </script>
 
     <h4>Start Time</h4>
@@ -92,7 +111,7 @@
             T.start = parseInt(newValue);
             T.end = T.start + duration * 60;
             document.getElementById("start").innerHTML = timeConverter(newValue);
-            setShowParameters(dataset, T.start, T.end);
+            setShowParameters(dataset, T.start, T.end, R.d1);
         }
     </script>
     <br><span id="start"> ? </span><br>
@@ -105,20 +124,20 @@
             duration = parseInt(newValue);
             T.end = T.start + duration * 60;
             document.getElementById("end").innerHTML = newValue+ ' minute(s)';
-            setShowParameters(dataset, T.start, T.end);
+            setShowParameters(dataset, T.start, T.end, R.d1);
         }
     </script>
     <br><span id="end"> 0 minute(s) </span>
 
     <br><br><br><a href="" class="button" id="redirect">Show in Map</a>
     <script type="text/javascript">
-        function setShowParameters(data, start, end){
+        function setShowParameters(data, start, end, qSize){
             if(dataset == '3984') end = Math.min(end, 59);
             else if(dataset == 'SF') end = Math.min(end, 1213089934);
             else if(dataset == '4251') end = Math.min(end, 299);
             else if(dataset == 'ZR') end = Math.min(end, 1120797840);
  
-            var addr = "/show/"+data+"/"+start.toString()+"/"+end.toString();
+            var addr = "/show/"+data+"/"+start.toString()+"/"+end.toString()+"/"+qSize.toString();
             console.log(addr);
             document.getElementById("redirect").href = addr;
         }
