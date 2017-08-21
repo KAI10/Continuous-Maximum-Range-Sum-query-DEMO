@@ -82,6 +82,7 @@ router.get('/:name/:startTime/:endTime/:qSize', function(req, res, next) {
 
 	res.render('show', {
 		title: 'COMAXRS-DEMO',
+		dataset: req.params.name,
 		result: result,
 		data: data,
 		startTime: startTime,

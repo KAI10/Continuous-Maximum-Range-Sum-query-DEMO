@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var show = require('./routes/show');
+var show3D = require('./routes/show3D');
 var fileUpload = require('express-fileupload');
 //var exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/show', show);
+app.use('/show3D', show3D);
 app.use(fileUpload());
 
 app.post('/upload', function(req, res) {

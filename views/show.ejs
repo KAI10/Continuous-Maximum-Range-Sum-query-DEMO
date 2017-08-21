@@ -14,6 +14,7 @@
   <body>
 
     <% include templates/header.ejs %>
+    <a href="/show3D" class="button" id="goto3D">Show in 3D</a>
     <!--h3>COMAXRS Demo</h3-->
     <div id="map"></div>
        
@@ -23,7 +24,13 @@
 
         //console.log(window.location.href);
         console.log('inside initMap');
+
+        var dataset = <%- JSON.stringify(dataset) %>;
         
+        var addr = "/show3D/" + dataset + "/" + <%= startTime %> + "/" + <%= endTime %> + "/" + <%= qSize %>;
+        console.log('3D address: ', addr);
+        document.getElementById("goto3D").href = addr;
+        /**/
         var result = <%- JSON.stringify(result) %>;
         var data = <%- JSON.stringify(data) %>;
         //console.log(data);

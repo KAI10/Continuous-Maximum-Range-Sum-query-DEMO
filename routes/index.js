@@ -4,17 +4,18 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {
-  	title: 'COMAXRS-DEMO',
-  	dataset: ''
-  });
+	res.render('index', {
+		title: 'COMAXRS-DEMO',
+		dataset: ''
+	});
 });
 
 router.get('/:dataset', function(req, res, next) {
-  res.render('index', {
-  	title: 'COMAXRS-DEMO',
-  	dataset: req.params.dataset
-  });
+	//console.log('index.js with new dataset');
+	res.render('index', {
+		title: 'COMAXRS-DEMO',
+		dataset: req.params.dataset
+	});
 });
 
 module.exports = router;
