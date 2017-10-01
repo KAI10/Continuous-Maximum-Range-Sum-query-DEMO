@@ -25,7 +25,7 @@
         //console.log(window.location.href);
         console.log('inside initMap');
 
-        var dataset = <%- JSON.stringify(dataset) %>;
+        var dataset = <%- JSON.stringify(dataset) %>;   
         
         var addr = "/show3D/" + dataset + "/" + <%= startTime %> + "/" + <%= endTime %> + "/" + <%= qSize %>;
         console.log('3D address: ', addr);
@@ -47,6 +47,7 @@
         locations = mapProperties.locations;
 
         console.log(locations); 
+        console.log(mbrCenter);
         
         if(map == "NULL"){
             map = new google.maps.Map(document.getElementById('map'), {

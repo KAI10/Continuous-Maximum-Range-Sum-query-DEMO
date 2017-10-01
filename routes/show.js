@@ -49,6 +49,71 @@ function filter(address, startTime, endTime){
 	return data;
 }
 
+function addSolution(part, startTime, endTime, save){
+
+	//console.log('part: ', part);
+
+	var name, address;
+	if(part < 10) name = '0'+part.toString();
+	else name = part.toString();
+
+	name = 'SF_part_' + name + '.json';
+	address = '../public/data/' + name;
+
+	var data = require(address);
+	if(data.solutions[data.solutions.length-1].endTime <= startTime) return false;
+
+	var left = 0, right = data.solutions.length-1, mid;
+	while(left <= right){
+		mid = parseInt((left + right)/2);
+		if(data.solutions[mid].startTime == startTime) break;
+
+		//console.log(data.solutions[mid].startTime);
+		if(data.solutions[mid].startTime < startTime) left = mid + 1;
+		else right = mid - 1;
+	}
+
+	if(mid > 0) mid--;
+	//console.log('starting from: ', data.solutions[mid].startTime);
+
+	var complete = false;
+	for(var i=mid; i<data.solutions.length; i++){
+		var temp = {
+			startTime: data.solutions[i].startTime,
+			endTime: data.solutions[i].endTime,
+			items: data.solutions[i].items
+		}
+
+		save.push(temp);
+		if(data.solutions[i].endTime >= endTime){
+			complete = true;
+			break;
+		}
+	}
+
+	if(complete) return true;
+
+	part++;
+	if(part < 10) name = '0'+part.toString();
+	else name = part.toString();
+
+	name = 'SF_part_' + name + '.json';
+	address = '../public/data/' + name;
+
+	data = require(address);
+	for(var i=0; i<data.solutions.length && data.solutions[i].startTime < endTime; i++){
+		var temp = {
+			startTime: data.solutions[i].startTime,
+			endTime: data.solutions[i].endTime,
+			items: data.solutions[i].items
+		}
+
+		save.push(temp);
+	}
+
+	return true;
+}
+
 /* GET Map page. */
 router.get('/:name/:startTime/:endTime/:qSize', function(req, res, next) {
 
@@ -63,11 +128,31 @@ router.get('/:name/:startTime/:endTime/:qSize', function(req, res, next) {
 	var endTime = req.params.endTime;
 	var qSize = req.params.qSize;
 
-	var address = null;
-	if(req.params.name == 'newData') address = '../public/data/'+req.params.name+'.json';
-	else address = '../public/data/'+req.params.name+ '_' + qSize +'.json'
-	var result = require(address);
+	var address = null, result;
+	if(req.params.name == 'newData'){
+		address = '../public/data/'+req.params.name+'.json';
+		result = require(address);
+	}
+	else if(req.params.name != 'SF'){
+		address = '../public/data/'+req.params.name+ '_' + qSize +'.json';
+		result = require(address);
+	}
 	
+	else{
+		//handle segmented solution here
+		console.log('SF start');
+		var save = [];
+
+		for(var part = 0; part < 16; part++){
+			var complete = addSolution(part, startTime, endTime, save);
+			if(complete) break;
+		}
+
+		result = {solutions: save};
+		//console.log(result);
+		console.log('SF end');
+	}
+	/**/
 	//read data from multiple jsons
 	var data = [];
 	for(var part = 0; part < 10; part++){
